@@ -1,18 +1,21 @@
-FROM python:3.9-slim-buster
+FROM node:16
 
-WORKDIR /usr/src
 
-ENV PYTHONUNBUFFERED 1
-ENV PYTHONDONTWRITEBYTECODE 1
 
-RUN apt-get update && apt-get -y install \
-    netcat gcc postgresql \
-    && apt-get clean
+# Create app directory
+WORKDIR /usr/src/app
 
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/
-RUN pip install -r requirements.txt
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
 
-COPY . /usr/src/
+RUN npm install
+# If you are building your code for production
+# RUN npm install --only=production
 
-CMD gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 app.main:app
+# Bundle app source
+COPY . .
+
+EXPOSE 8080
+CMD [ "npm", "start" ]
