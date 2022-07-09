@@ -10,7 +10,7 @@ RUN apt-get update && apt-get -y install \
     && apt-get clean
 
 RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/
+COPY ./requirements.txt /usr/src/project
 RUN pip install -r requirements.txt
 
 COPY . /usr/src/project
